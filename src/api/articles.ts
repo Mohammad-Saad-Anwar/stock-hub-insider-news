@@ -2,13 +2,21 @@
 import { newsArticles } from '@/data/mockNews';
 import { connectToDatabase } from '@/server/mongodb';
 
-// Fallback to client-side mock if server-side fails
+// Check if running in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
+// Always use mock data in browser environment
 const mockArticles = [...newsArticles];
 
 /**
  * Get all articles from MongoDB or fallback to mock data
  */
 export async function getAllArticles() {
+  if (isBrowser) {
+    console.log("Browser environment detected, using mock articles data");
+    return mockArticles;
+  }
+
   try {
     const { db } = await connectToDatabase();
     const articles = await db.collection("articles").find({}).toArray();
@@ -30,6 +38,10 @@ export async function getAllArticles() {
  * Get featured articles from MongoDB or fallback to mock
  */
 export async function getFeaturedArticles() {
+  if (isBrowser) {
+    return mockArticles.filter(article => article.featured).slice(0, 5);
+  }
+
   try {
     const { db } = await connectToDatabase();
     const articles = await db.collection("articles")
@@ -52,6 +64,12 @@ export async function getFeaturedArticles() {
  * Get latest articles from MongoDB or fallback to mock
  */
 export async function getLatestArticles(limit = 10) {
+  if (isBrowser) {
+    return [...mockArticles]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, limit);
+  }
+
   try {
     const { db } = await connectToDatabase();
     const articles = await db.collection("articles")
@@ -79,6 +97,12 @@ export async function getLatestArticles(limit = 10) {
  * Get articles by category from MongoDB or fallback to mock
  */
 export async function getArticlesByCategory(category, limit = 10) {
+  if (isBrowser) {
+    return mockArticles
+      .filter(article => article.category === category)
+      .slice(0, limit);
+  }
+
   try {
     const { db } = await connectToDatabase();
     const articles = await db.collection("articles")
@@ -105,6 +129,10 @@ export async function getArticlesByCategory(category, limit = 10) {
  * Get article by ID from MongoDB or fallback to mock
  */
 export async function getArticleById(id) {
+  if (isBrowser) {
+    return mockArticles.find(article => article.id === id);
+  }
+
   try {
     const { db } = await connectToDatabase();
     const article = await db.collection("articles").findOne({ id });
@@ -119,6 +147,12 @@ export async function getArticleById(id) {
  * Create new article in MongoDB
  */
 export async function createArticle(articleData) {
+  if (isBrowser) {
+    console.log("Mock creating article:", articleData);
+    const newId = `article-${Date.now()}`;
+    return { success: true, id: newId };
+  }
+
   try {
     const { db } = await connectToDatabase();
     // Generate a unique ID
@@ -142,6 +176,11 @@ export async function createArticle(articleData) {
  * Update article in MongoDB
  */
 export async function updateArticle(id, articleData) {
+  if (isBrowser) {
+    console.log("Mock updating article:", id, articleData);
+    return { success: true, modifiedCount: 1 };
+  }
+
   try {
     const { db } = await connectToDatabase();
     const result = await db.collection("articles").updateOne(
@@ -168,6 +207,11 @@ export async function updateArticle(id, articleData) {
  * Delete article from MongoDB
  */
 export async function deleteArticle(id) {
+  if (isBrowser) {
+    console.log("Mock deleting article:", id);
+    return { success: true };
+  }
+
   try {
     const { db } = await connectToDatabase();
     const result = await db.collection("articles").deleteOne({ id });
@@ -182,6 +226,11 @@ export async function deleteArticle(id) {
  * Initialize database with mock data if empty
  */
 export async function initializeDatabase() {
+  if (isBrowser) {
+    console.log("Cannot initialize database from browser");
+    return { success: false, message: "Cannot initialize database from browser" };
+  }
+
   try {
     const { db } = await connectToDatabase();
     // Check if there are any articles

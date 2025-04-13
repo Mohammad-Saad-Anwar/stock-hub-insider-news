@@ -8,15 +8,18 @@ import { Link } from "react-router-dom";
 export function LatestArticles() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         const data = await getLatestArticles(6);
-        setArticles(data);
+        setArticles(data || []);
       } catch (error) {
         console.error("Error fetching latest articles:", error);
+        setError("Failed to load articles. Using mock data instead.");
       } finally {
         setIsLoading(false);
       }
@@ -35,6 +38,12 @@ export function LatestArticles() {
       </div>
       <Separator className="mb-6" />
       
+      {error && (
+        <div className="mb-4 p-2 bg-yellow-50 text-yellow-800 rounded-md">
+          {error}
+        </div>
+      )}
+      
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, index) => (
@@ -43,9 +52,15 @@ export function LatestArticles() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+          {articles && articles.length > 0 ? (
+            articles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-12">
+              <p>No articles found.</p>
+            </div>
+          )}
         </div>
       )}
     </section>

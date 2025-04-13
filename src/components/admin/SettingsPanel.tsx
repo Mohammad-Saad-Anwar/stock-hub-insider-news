@@ -20,6 +20,9 @@ import {
 } from "@/components/ui/tabs";
 import { testConnection } from "@/server/mongodb";
 
+// Check if running in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
 export function SettingsPanel() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
@@ -78,6 +81,17 @@ export function SettingsPanel() {
   const testDbConnection = async () => {
     setIsTestingConnection(true);
     try {
+      if (isBrowser) {
+        // In browser environment, show warning
+        toast({
+          title: "Browser environment detected",
+          description: "MongoDB connections can't be tested directly in the browser. This would work in a server environment.",
+          variant: "destructive"
+        });
+        setIsTestingConnection(false);
+        return;
+      }
+
       const result = await testConnection();
       
       if (result.success) {
