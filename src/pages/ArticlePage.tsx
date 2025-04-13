@@ -1,20 +1,66 @@
 
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { newsArticles } from "@/data/mockNews";
 import { ArticleCard } from "@/components/news/ArticleCard";
+import { getArticleById, getArticlesByCategory } from "@/api/articles";
 
 export default function ArticlePage() {
   const { id } = useParams();
-  const article = newsArticles.find(article => article.id === id);
+  const [article, setArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Get related articles
-  const relatedArticles = newsArticles
-    .filter(a => a.category === article?.category && a.id !== id)
-    .slice(0, 3);
+  useEffect(() => {
+    const fetchArticleData = async () => {
+      try {
+        setIsLoading(true);
+        const articleData = await getArticleById(id);
+        
+        if (articleData) {
+          setArticle(articleData);
+          
+          // Get related articles
+          const related = await getArticlesByCategory(articleData.category, 3);
+          setRelatedArticles(related.filter(a => a.id !== id));
+        } else {
+          setError("Article not found");
+        }
+      } catch (err) {
+        console.error("Error fetching article:", err);
+        setError("Failed to load article");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchArticleData();
+  }, [id]);
   
-  if (!article) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="container px-4 py-12">
+          <div className="animate-pulse space-y-4">
+            <div className="h-96 bg-muted rounded-lg"></div>
+            <div className="h-10 bg-muted rounded-md w-3/4"></div>
+            <div className="h-4 bg-muted rounded-md w-1/4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded-md"></div>
+              <div className="h-4 bg-muted rounded-md"></div>
+              <div className="h-4 bg-muted rounded-md w-5/6"></div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+  
+  if (error || !article) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -62,7 +108,7 @@ export default function ArticlePage() {
             </div>
             
             <div className="flex flex-wrap gap-2 mt-6">
-              {article.tags.map(tag => (
+              {article.tags && article.tags.map(tag => (
                 <span key={tag} className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded-full">
                   {tag}
                 </span>
@@ -75,9 +121,13 @@ export default function ArticlePage() {
             <div className="border border-border rounded-lg p-6 sticky top-24">
               <h3 className="text-lg font-bold mb-4">Related Articles</h3>
               <div className="space-y-4">
-                {relatedArticles.map(article => (
-                  <ArticleCard key={article.id} article={article} variant="small" />
-                ))}
+                {relatedArticles.length > 0 ? (
+                  relatedArticles.map(article => (
+                    <ArticleCard key={article.id} article={article} variant="small" />
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">No related articles found</p>
+                )}
               </div>
             </div>
           </div>
