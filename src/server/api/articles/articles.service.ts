@@ -13,7 +13,23 @@ export class ArticleService {
 
   private async initializeData(): Promise<void> {
     try {
-      await this.articleModel.seed(newsArticles);
+      // Convert the newsArticles to match IArticle interface
+      const articlesData: IArticle[] = newsArticles.map(article => ({
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        summary: article.excerpt, // map excerpt to summary
+        author: article.author,
+        category: article.category,
+        imageUrl: article.image, // map image to imageUrl
+        featured: article.featured,
+        date: article.date,
+        updatedAt: article.date, // Use the same date for updatedAt
+        tags: article.tags,
+        readTime: Math.ceil(article.content.split(' ').length / 200) // Estimate read time
+      }));
+      
+      await this.articleModel.seed(articlesData);
       console.log('Articles collection seeded if empty');
     } catch (error) {
       console.error('Failed to seed articles collection:', error);
