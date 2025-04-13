@@ -18,10 +18,20 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { testConnection } from "@/server/mongodb";
 
 // Check if running in a browser environment
 const isBrowser = typeof window !== 'undefined';
+
+// Import MongoDB test function only in non-browser environments
+let testConnection;
+if (!isBrowser) {
+  // Dynamic import to avoid browser issues
+  import('@/server/mongodb').then(module => {
+    testConnection = module.testConnection;
+  }).catch(error => {
+    console.error("Failed to import MongoDB test module:", error);
+  });
+}
 
 export function SettingsPanel() {
   const { toast } = useToast();
@@ -38,7 +48,7 @@ export function SettingsPanel() {
   });
   
   const [dbSettings] = useState({
-    dbUri: process.env.MONGODB_URI || "mongodb://localhost:27017/techstocksinsider",
+    dbUri: isBrowser ? "Not available in browser" : (process.env.MONGODB_URI || "mongodb://localhost:27017/techstocksinsider"),
     dbName: "techstocksinsider"
   });
   
@@ -90,6 +100,10 @@ export function SettingsPanel() {
         });
         setIsTestingConnection(false);
         return;
+      }
+
+      if (!testConnection) {
+        throw new Error("MongoDB test function not available");
       }
 
       const result = await testConnection();

@@ -1,20 +1,30 @@
-
-import { MongoClient, ServerApiVersion } from 'mongodb';
+// This file handles MongoDB connections
+// It detects browser environments and provides mock functionality when needed
 
 // Check if running in a browser environment
 const isBrowser = typeof window !== 'undefined';
 
-// If in browser, provide mock implementations
-if (isBrowser) {
-  console.warn("MongoDB code is running in the browser. This is not recommended for production. Using mock data instead.");
+// Only import MongoDB in server environments
+let MongoClient, ServerApiVersion;
+if (!isBrowser) {
+  try {
+    const mongodb = require('mongodb');
+    MongoClient = mongodb.MongoClient;
+    ServerApiVersion = mongodb.ServerApiVersion;
+  } catch (error) {
+    console.error("Failed to import MongoDB. This is expected in browser environments.");
+  }
 }
 
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/techstocksinsider";
+// URI from environment variable or default (for local development)
+const uri = !isBrowser && process.env.MONGODB_URI 
+  ? process.env.MONGODB_URI 
+  : "mongodb://localhost:27017/techstocksinsider";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = !isBrowser ? new MongoClient(uri, {
+// Only create a client in server environments
+const client = !isBrowser && MongoClient ? new MongoClient(uri, {
   serverApi: {
-    version: ServerApiVersion.v1,
+    version: ServerApiVersion?.v1,
     strict: true,
     deprecationErrors: true,
   }
@@ -23,10 +33,14 @@ const client = !isBrowser ? new MongoClient(uri, {
 let cachedClient = null;
 let cachedDb = null;
 
+/**
+ * Connect to the MongoDB database
+ * Returns mock data in browser environments
+ */
 export async function connectToDatabase() {
   // If in browser environment, return mock connection
   if (isBrowser) {
-    console.warn("Attempted MongoDB connection in browser environment. Using mock instead.");
+    console.warn("MongoDB cannot connect in browser environments. Using mock data instead.");
     return { client: null, db: null };
   }
 
@@ -35,33 +49,51 @@ export async function connectToDatabase() {
     return { client: cachedClient, db: cachedDb };
   }
 
-  // Otherwise create a new connection
-  await client.connect();
-  const db = client.db("techstocksinsider");
-  
-  // Cache the connection
-  cachedClient = client;
-  cachedDb = db;
-  
-  console.log("Connected successfully to MongoDB");
-  return { client, db };
+  try {
+    // Otherwise create a new connection
+    await client.connect();
+    const db = client.db("techstocksinsider");
+    
+    // Cache the connection
+    cachedClient = client;
+    cachedDb = db;
+    
+    console.log("Connected successfully to MongoDB");
+    return { client, db };
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    return { client: null, db: null };
+  }
 }
 
-// For testing the connection
+/**
+ * Test the MongoDB connection
+ * Returns mock results in browser environments
+ */
 export async function testConnection() {
-  try {
-    // If in browser environment, return mock success
-    if (isBrowser) {
-      console.warn("Attempted MongoDB connection test in browser environment.");
-      return { success: false, message: "MongoDB cannot be accessed directly from the browser" };
-    }
+  // If in browser environment, return mock result
+  if (isBrowser) {
+    console.warn("MongoDB connections cannot be tested in browser environments");
+    return { 
+      success: false, 
+      message: "MongoDB operations are not available in the browser. This would work in a server environment."
+    };
+  }
 
+  try {
     const { client } = await connectToDatabase();
+    if (!client) {
+      throw new Error("Failed to initialize MongoDB client");
+    }
+    
     await client.db("admin").command({ ping: 1 });
     console.log("MongoDB connection successfully established");
     return { success: true, message: "Connection successful" };
   } catch (error) {
     console.error("MongoDB connection error:", error);
-    return { success: false, error: error.message };
+    return { 
+      success: false, 
+      error: error.message || "Unknown error connecting to MongoDB" 
+    };
   }
 }

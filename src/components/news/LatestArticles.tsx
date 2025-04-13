@@ -4,6 +4,7 @@ import { getLatestArticles } from "@/api/articles";
 import { ArticleCard } from "./ArticleCard";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
+import { AlertCircle } from "lucide-react";
 
 export function LatestArticles() {
   const [articles, setArticles] = useState([]);
@@ -16,10 +17,26 @@ export function LatestArticles() {
         setIsLoading(true);
         setError(null);
         const data = await getLatestArticles(6);
+        
+        if (!data || data.length === 0) {
+          console.warn("No articles returned, using empty array");
+        }
+        
         setArticles(data || []);
       } catch (error) {
         console.error("Error fetching latest articles:", error);
         setError("Failed to load articles. Using mock data instead.");
+        // Try to set mock data if available
+        try {
+          import('@/data/mockNews').then(({ newsArticles }) => {
+            const sortedArticles = [...newsArticles]
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+              .slice(0, 6);
+            setArticles(sortedArticles);
+          });
+        } catch (mockError) {
+          console.error("Failed to load mock data:", mockError);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -39,8 +56,12 @@ export function LatestArticles() {
       <Separator className="mb-6" />
       
       {error && (
-        <div className="mb-4 p-2 bg-yellow-50 text-yellow-800 rounded-md">
-          {error}
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-md flex items-start">
+          <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">Note</p>
+            <p>{error}</p>
+          </div>
         </div>
       )}
       

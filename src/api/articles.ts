@@ -1,6 +1,5 @@
 
 import { newsArticles } from '@/data/mockNews';
-import { connectToDatabase } from '@/server/mongodb';
 
 // Check if running in a browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -8,10 +7,22 @@ const isBrowser = typeof window !== 'undefined';
 // Always use mock data in browser environment
 const mockArticles = [...newsArticles];
 
+// Only import MongoDB functions in non-browser environments
+let connectToDatabase;
+if (!isBrowser) {
+  // Dynamic import to avoid browser issues
+  import('@/server/mongodb').then(module => {
+    connectToDatabase = module.connectToDatabase;
+  }).catch(error => {
+    console.error("Failed to import MongoDB module:", error);
+  });
+}
+
 /**
  * Get all articles from MongoDB or fallback to mock data
  */
 export async function getAllArticles() {
+  // Always use mock data in browser environment
   if (isBrowser) {
     console.log("Browser environment detected, using mock articles data");
     return mockArticles;
@@ -19,6 +30,10 @@ export async function getAllArticles() {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const articles = await db.collection("articles").find({}).toArray();
     
     if (articles && articles.length > 0) {
@@ -44,6 +59,10 @@ export async function getFeaturedArticles() {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const articles = await db.collection("articles")
       .find({ featured: true })
       .limit(5)
@@ -72,6 +91,10 @@ export async function getLatestArticles(limit = 10) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const articles = await db.collection("articles")
       .find({})
       .sort({ date: -1 })
@@ -105,6 +128,10 @@ export async function getArticlesByCategory(category, limit = 10) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const articles = await db.collection("articles")
       .find({ category })
       .limit(limit)
@@ -135,6 +162,10 @@ export async function getArticleById(id) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const article = await db.collection("articles").findOne({ id });
     return article || mockArticles.find(article => article.id === id);
   } catch (error) {
@@ -155,6 +186,10 @@ export async function createArticle(articleData) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     // Generate a unique ID
     const newId = `article-${Date.now()}`;
     const newArticle = {
@@ -183,6 +218,10 @@ export async function updateArticle(id, articleData) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const result = await db.collection("articles").updateOne(
       { id },
       { 
@@ -214,6 +253,10 @@ export async function deleteArticle(id) {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     const result = await db.collection("articles").deleteOne({ id });
     return { success: result.deletedCount > 0 };
   } catch (error) {
@@ -233,6 +276,10 @@ export async function initializeDatabase() {
 
   try {
     const { db } = await connectToDatabase();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+    
     // Check if there are any articles
     const count = await db.collection("articles").countDocuments();
     
