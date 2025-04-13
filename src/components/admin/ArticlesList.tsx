@@ -105,9 +105,11 @@ export function ArticlesList() {
             />
           </div>
           
-          <Button as={Link} to="/admin/articles/new">
-            <Plus className="h-4 w-4 mr-2" />
-            New Article
+          <Button asChild>
+            <Link to="/admin/articles/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Article
+            </Link>
           </Button>
         </div>
       </div>
