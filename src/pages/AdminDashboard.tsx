@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       <AdminSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="flex-1">
-        <AdminHeader sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <AdminHeader />
         
         <main className="container max-w-7xl mx-auto px-4 py-6">
           {/* Browser notice */}
