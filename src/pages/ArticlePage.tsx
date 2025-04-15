@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,7 +6,7 @@ import { ArticleCard } from "@/components/news/ArticleCard";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, Share2 } from "lucide-react";
 import { MobileTabBar } from "@/components/mobile/MobileTabBar";
-import { newsArticles, getArticlesByCategory } from "@/data/mockNews";
+import { newsArticles } from "@/data/mockNews";
 
 // Helper function to get article by ID
 const getArticleById = (id) => {
@@ -33,8 +32,8 @@ export default function ArticlePage() {
           setArticle(articleData);
           
           // Get related articles
-          const related = getArticlesByCategory(articleData.category, 3);
-          setRelatedArticles(related.filter(a => a.id !== id));
+          const related = newsArticles.filter(a => a.category === articleData.category && a.id !== id).slice(0, 3);
+          setRelatedArticles(related);
         } else {
           setError("Article not found");
         }
