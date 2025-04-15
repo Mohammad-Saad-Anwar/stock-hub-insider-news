@@ -19,11 +19,16 @@ const sidebarItems = [
   { name: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export function AdminSidebar({ open, setOpen }: AdminSidebarProps) {
   const location = useLocation();
   
   return (
-    <div className="w-64 min-h-screen bg-card border-r border-border p-4">
+    <div className={`w-64 min-h-screen bg-card border-r border-border p-4 ${!open ? 'hidden' : 'block'} md:block`}>
       <div className="mb-8 pt-4">
         <h1 className="text-xl font-bold px-4">
           <span className="text-accent">Admin</span> Panel
