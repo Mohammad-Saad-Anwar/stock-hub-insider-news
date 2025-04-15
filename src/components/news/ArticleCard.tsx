@@ -4,7 +4,7 @@ import { NewsArticle } from "@/data/mockNews";
 
 interface ArticleCardProps {
   article: NewsArticle;
-  variant?: "default" | "featured" | "small";
+  variant?: "default" | "featured" | "small" | "mobile";
 }
 
 export function ArticleCard({ article, variant = "default" }: ArticleCardProps) {
@@ -21,7 +21,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
               <div className="category-badge mb-3">{article.category}</div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 line-clamp-3">{article.title}</h2>
-              <p className="text-white/80 line-clamp-2">{article.excerpt}</p>
+              <div className="text-white/80 line-clamp-2" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
               <div className="mt-4 text-white/70 text-sm flex items-center">
                 <span>{article.author}</span>
                 <span className="mx-2">•</span>
@@ -54,6 +54,26 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
     );
   }
 
+  if (variant === "mobile") {
+    return (
+      <div className="article-card h-full">
+        <Link to={`/article/${article.id}`} className="block h-full">
+          <div className="aspect-square overflow-hidden">
+            <img
+              src={article.image}
+              alt={article.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="p-2">
+            <div className="category-badge mb-1 text-[10px]">{article.category}</div>
+            <h3 className="text-xs font-medium line-clamp-2 mb-1">{article.title}</h3>
+          </div>
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="article-card group h-full">
       <Link to={`/article/${article.id}`} className="block h-full">
@@ -67,7 +87,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
         <div className="p-4">
           <div className="category-badge mb-2">{article.category}</div>
           <h3 className="text-lg font-bold mb-2 group-hover:text-accent line-clamp-2">{article.title}</h3>
-          <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{article.excerpt}</p>
+          <div className="text-muted-foreground text-sm line-clamp-2 mb-3" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
           <div className="date-text flex items-center justify-between">
             <span>{article.date}</span>
             <span>{article.author}</span>

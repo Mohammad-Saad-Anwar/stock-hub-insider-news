@@ -8,8 +8,59 @@ import { LatestArticles } from "@/components/news/LatestArticles";
 import { CategoriesSection } from "@/components/news/CategoriesSection";
 import { CategoryNewsSection } from "@/components/news/CategoryNewsSection";
 import { HeroSection } from "@/components/news/HeroSection";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileHeader } from "@/components/mobile/MobileHeader";
+import { MobileTabBar } from "@/components/mobile/MobileTabBar";
+import { MobileNewsGrid } from "@/components/mobile/MobileNewsGrid";
+import { useEffect, useState } from "react";
+import { categories, getArticlesByCategory, getTrendingArticles, newsArticles } from "@/data/mockNews";
 
 export default function HomePage() {
+  const isMobile = useIsMobile();
+  const [trendingArticles, setTrendingArticles] = useState([]);
+  const [techArticles, setTechArticles] = useState([]);
+  const [businessArticles, setBusinessArticles] = useState([]);
+  
+  useEffect(() => {
+    // Load articles for mobile view
+    if (isMobile) {
+      setTrendingArticles(getTrendingArticles());
+      setTechArticles(getArticlesByCategory("Technology"));
+      setBusinessArticles(getArticlesByCategory("Business"));
+    }
+  }, [isMobile]);
+  
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-background mobile-content">
+        <MobileHeader />
+        
+        <main>
+          <BreakingNews />
+          
+          <MobileNewsGrid 
+            title="Trending" 
+            articles={trendingArticles} 
+          />
+          
+          <MobileNewsGrid 
+            title="Technology" 
+            articles={techArticles}
+            category="Technology"
+          />
+          
+          <MobileNewsGrid 
+            title="Business" 
+            articles={businessArticles}
+            category="Business"  
+          />
+        </main>
+        
+        <MobileTabBar />
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

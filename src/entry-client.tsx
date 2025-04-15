@@ -1,10 +1,12 @@
 
-import { hydrateRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-// This hydrates the app after server-side rendering
-hydrateRoot(
-  document.getElementById('root')!,
-  <App />
+// Render the app directly without hydration
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );

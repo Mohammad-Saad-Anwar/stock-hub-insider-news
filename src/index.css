@@ -38,6 +38,7 @@
     --radius: 0.5rem;
   }
 
+  /* Override dark mode colors to keep them consistent with light mode */
   .dark {
     --background: 222 47% 11%;
     --foreground: 210 40% 98%;
@@ -48,8 +49,9 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47% 11%;
+    /* Keep these colors the same as light mode */
+    --primary: 215 60% 20%;
+    --primary-foreground: 210 40% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -103,6 +105,31 @@
   .date-text {
     @apply text-sm text-muted-foreground;
   }
+
+  /* Mobile app specific classes */
+  .mobile-tab-bar {
+    @apply fixed bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around items-center py-2 px-1 z-50;
+  }
+  
+  .mobile-tab {
+    @apply flex flex-col items-center justify-center py-1 px-3 text-xs text-muted-foreground;
+  }
+  
+  .mobile-tab.active {
+    @apply text-accent;
+  }
+
+  .mobile-header {
+    @apply sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border px-4 py-3 flex justify-between items-center;
+  }
+
+  .mobile-news-grid {
+    @apply grid grid-cols-2 gap-3 px-4 mt-4;
+  }
+
+  .mobile-category-section {
+    @apply px-4 py-3;
+  }
 }
 
 @keyframes slide-in-right {
@@ -133,4 +160,11 @@
 
 .animate-slide-out-left {
   animation: slide-out-left 0.5s ease forwards;
+}
+
+/* Mobile specific styling */
+@media (max-width: 768px) {
+  .mobile-content {
+    @apply pb-16;
+  }
 }
