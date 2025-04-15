@@ -1,94 +1,83 @@
 
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { BreakingNews } from "@/components/news/BreakingNews";
+import { HeroSection } from "@/components/news/HeroSection";
 import { FeaturedArticles } from "@/components/news/FeaturedArticles";
-import { TrendingArticles } from "@/components/news/TrendingArticles";
 import { LatestArticles } from "@/components/news/LatestArticles";
+import { TrendingArticles } from "@/components/news/TrendingArticles";
 import { CategoriesSection } from "@/components/news/CategoriesSection";
 import { CategoryNewsSection } from "@/components/news/CategoryNewsSection";
-import { HeroSection } from "@/components/news/HeroSection";
+import { getLatestArticles, getFeaturedArticles, getTrendingArticles } from "@/data/mockNews";
+import { categories } from "@/data/mockNews";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
 import { MobileNavigation } from "@/components/mobile/MobileNavigation";
 import { MobileNewsGrid } from "@/components/mobile/MobileNewsGrid";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { getTrendingArticles, getArticlesByCategory, getLatestArticles } from "@/data/mockNews";
 
 export default function HomePage() {
   const isMobile = useIsMobile();
+  const latest = getLatestArticles();
+  const featured = getFeaturedArticles();
+  const trending = getTrendingArticles();
 
+  // Use the first category for an example category section
+  const exampleCategory = categories[0];
+  
   return (
     <div className="min-h-screen bg-background">
-      {/* Desktop Header */}
-      {!isMobile && <Navbar />}
-      
-      {/* Mobile Header */}
-      {isMobile && <MobileHeader />}
-
-      {/* Hero Section - Only on Desktop */}
-      {!isMobile && <HeroSection />}
-      
-      {!isMobile && <BreakingNews />}
-      
-      <main className={`${isMobile ? 'px-4 py-4 bg-black pb-24' : 'container px-4 py-6'}`}>
-        {/* Mobile Layout */}
-        {isMobile && (
-          <>
+      {isMobile ? (
+        // Mobile layout
+        <div className="bg-black text-white">
+          <MobileHeader />
+          
+          {/* Mobile Featured News */}
+          <main className="px-4 pb-20">
             <MobileNewsGrid 
-              title="Trending" 
-              articles={getTrendingArticles()}
-              viewAllLink="/trending"
-            />
-            
-            <MobileNewsGrid 
-              title="Politics" 
-              articles={getArticlesByCategory("Politics")}
-              viewAllLink="/category/politics"
-            />
-            
-            <MobileNewsGrid 
-              title="Technology" 
-              articles={getArticlesByCategory("Technology")}
-              viewAllLink="/category/technology"
-            />
-            
-            <MobileNewsGrid 
-              title="Business" 
-              articles={getArticlesByCategory("Business")}
-              viewAllLink="/category/business"
+              title="Featured" 
+              articles={featured} 
+              viewAllLink="/category/featured" 
             />
             
             <MobileNewsGrid 
               title="Latest News" 
-              articles={getLatestArticles(6)}
-              viewAllLink="/latest"
+              articles={latest} 
+              viewAllLink="/latest" 
             />
-          </>
-        )}
-        
-        {/* Desktop Layout */}
-        {!isMobile && (
-          <>
-            <FeaturedArticles />
-            <TrendingArticles />
             
-            {/* Category-specific news sections */}
-            <CategoryNewsSection category="Business" />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-              <CategoryNewsSection category="Technology" compact />
-              <CategoryNewsSection category="Markets" compact />
+            <MobileNewsGrid 
+              title="Trending" 
+              articles={trending} 
+              viewAllLink="/trending" 
+            />
+            
+            {/* More sections can be added here */}
+          </main>
+          
+          <MobileNavigation />
+        </div>
+      ) : (
+        // Desktop layout
+        <>
+          <Navbar />
+          <main>
+            <HeroSection />
+            <div className="container px-4 py-8">
+              <div className="flex flex-col gap-10">
+                <FeaturedArticles articles={featured} />
+                <LatestArticles articles={latest} />
+                <TrendingArticles articles={trending} />
+                <CategoriesSection categories={categories} />
+                <CategoryNewsSection 
+                  category={exampleCategory} 
+                  viewAllLink={`/category/${exampleCategory.toLowerCase()}`} 
+                />
+              </div>
             </div>
-            
-            <LatestArticles />
-            <CategoriesSection />
-          </>
-        )}
-      </main>
-      
-      {!isMobile && <Footer />}
-      
-      {/* Mobile Navigation */}
-      {isMobile && <MobileNavigation />}
+          </main>
+          <Footer />
+        </>
+      )}
     </div>
   );
 }
