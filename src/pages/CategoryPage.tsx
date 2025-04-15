@@ -7,6 +7,7 @@ import { ArticleCard } from "@/components/news/ArticleCard";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
 import { MobileNavigation } from "@/components/mobile/MobileNavigation";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Link } from "react-router-dom";
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -93,6 +94,3 @@ export default function CategoryPage() {
     </div>
   );
 }
-
-// Missing import
-import { Link } from "react-router-dom";

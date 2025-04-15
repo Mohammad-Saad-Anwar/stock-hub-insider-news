@@ -1,49 +1,15 @@
 
 import { useEffect, useState } from "react";
-import { getLatestArticles } from "@/api/articles";
+import { getLatestArticles } from "@/data/mockNews";
 import { ArticleCard } from "./ArticleCard";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 
 export function LatestArticles() {
-  const [articles, setArticles] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await getLatestArticles(6);
-        
-        if (!data || data.length === 0) {
-          console.warn("No articles returned, using empty array");
-        }
-        
-        setArticles(data || []);
-      } catch (error) {
-        console.error("Error fetching latest articles:", error);
-        setError("Failed to load articles. Using mock data instead.");
-        // Try to set mock data if available
-        try {
-          import('@/data/mockNews').then(({ newsArticles }) => {
-            const sortedArticles = [...newsArticles]
-              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-              .slice(0, 6);
-            setArticles(sortedArticles);
-          });
-        } catch (mockError) {
-          console.error("Failed to load mock data:", mockError);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchArticles();
-  }, []);
+  const articles = getLatestArticles().slice(0, 6);
 
   return (
     <section className="my-12">

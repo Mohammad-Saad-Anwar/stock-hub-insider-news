@@ -56,7 +56,7 @@ export default function ArticlePage() {
                 <h1 className="text-xl font-bold text-white mb-2">{article.title}</h1>
                 <div className="flex justify-between items-center">
                   <div className="flex space-x-2 text-sm text-gray-300">
-                    <span className="text-red-500">★ {article.rating || "4.8"}</span>
+                    <span className="text-red-500">★ 4.8</span>
                     <span>• {article.date.split('-')[0]}</span>
                   </div>
                   <Badge variant="outline" className="text-xs border-gray-700 text-gray-300">

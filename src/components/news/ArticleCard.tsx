@@ -21,7 +21,11 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
               <div className="category-badge mb-3">{article.category}</div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 line-clamp-3">{article.title}</h2>
-              <div className="text-white/80 line-clamp-2" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
+              <div 
+                className="text-white/80 line-clamp-2" 
+                data-lov-id="src\components\news\ArticleCard.tsx:15:10"
+                dangerouslySetInnerHTML={{ __html: article.excerpt }} 
+              />
               <div className="mt-4 text-white/70 text-sm flex items-center">
                 <span>{article.author}</span>
                 <span className="mx-2">•</span>
@@ -67,7 +71,11 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
         <div className="p-4">
           <div className="category-badge mb-2">{article.category}</div>
           <h3 className="text-lg font-bold mb-2 group-hover:text-accent line-clamp-2">{article.title}</h3>
-          <div className="text-muted-foreground text-sm line-clamp-2 mb-3" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
+          <div 
+            className="text-muted-foreground text-sm line-clamp-2 mb-3" 
+            data-lov-id="src\components\news\ArticleCard.tsx:15:10"
+            dangerouslySetInnerHTML={{ __html: article.excerpt }} 
+          />
           <div className="date-text flex items-center justify-between">
             <span>{article.date}</span>
             <span>{article.author}</span>

@@ -65,12 +65,11 @@ export default function HomePage() {
             <div className="container px-4 py-8">
               <div className="flex flex-col gap-10">
                 <FeaturedArticles articles={featured} />
-                <LatestArticles articles={latest} />
-                <TrendingArticles articles={trending} />
+                <LatestArticles />
+                <TrendingArticles />
                 <CategoriesSection categories={categories} />
                 <CategoryNewsSection 
                   category={exampleCategory} 
-                  viewAllLink={`/category/${exampleCategory.toLowerCase()}`} 
                 />
               </div>
             </div>
