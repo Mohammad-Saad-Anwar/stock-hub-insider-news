@@ -138,9 +138,7 @@ export default function ArticlePage() {
             
             <div className="prose prose-sm max-w-none mb-8">
               <div className="text-base mb-4 font-medium" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
-              {article.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-4">{paragraph}</p>
-              ))}
+              <div dangerouslySetInnerHTML={{ __html: article.content }} />
             </div>
             
             <div className="flex flex-wrap gap-2 mt-6 mb-8">
@@ -164,8 +162,6 @@ export default function ArticlePage() {
             )}
           </div>
         </main>
-        
-        <MobileTabBar />
       </div>
     );
   }
@@ -197,9 +193,7 @@ export default function ArticlePage() {
             
             <div className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none mb-8">
               <div className="text-lg font-medium mb-6" dangerouslySetInnerHTML={{ __html: article.excerpt }} />
-              {article.content.split('\n\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
+              <div dangerouslySetInnerHTML={{ __html: article.content }} />
             </div>
             
             <div className="flex flex-wrap gap-2 mt-6">
