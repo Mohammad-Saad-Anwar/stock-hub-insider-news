@@ -9,9 +9,7 @@ import HomePage from "./pages/HomePage";
 import ArticlePage from "./pages/ArticlePage";
 import CategoryPage from "./pages/CategoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
-import NotFoundPage from "./pages/NotFoundPage";
-import ServerErrorPage from "./pages/ServerErrorPage";
-import ForbiddenPage from "./pages/ForbiddenPage";
+import NotFound from "./pages/NotFound";
 
 // Configure the React Query client
 const queryClient = new QueryClient({
@@ -39,12 +37,8 @@ const App = () => (
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
             
-            {/* Error pages */}
-            <Route path="/500" element={<ServerErrorPage />} />
-            <Route path="/403" element={<ForbiddenPage />} />
-            
             {/* 404 page */}
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

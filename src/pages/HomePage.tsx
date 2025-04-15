@@ -7,10 +7,11 @@ import { TrendingArticles } from "@/components/news/TrendingArticles";
 import { LatestArticles } from "@/components/news/LatestArticles";
 import { CategoriesSection } from "@/components/news/CategoriesSection";
 import { CategoryNewsSection } from "@/components/news/CategoryNewsSection";
+import { HeroSection } from "@/components/news/HeroSection";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileHeader } from "@/components/mobile/MobileHeader";
 import { MobileTabBar } from "@/components/mobile/MobileTabBar";
-import { MobileNewsCarousel } from "@/components/mobile/MobileNewsCarousel";
+import { MobileNewsGrid } from "@/components/mobile/MobileNewsGrid";
 import { useEffect, useState } from "react";
 import { categories, getArticlesByCategory, getTrendingArticles, newsArticles } from "@/data/mockNews";
 
@@ -35,20 +36,20 @@ export default function HomePage() {
         <MobileHeader />
         
         <main>
-          {/* Breaking news is hidden for mobile as requested */}
+          <BreakingNews />
           
-          <MobileNewsCarousel 
+          <MobileNewsGrid 
             title="Trending" 
             articles={trendingArticles} 
           />
           
-          <MobileNewsCarousel 
+          <MobileNewsGrid 
             title="Technology" 
             articles={techArticles}
             category="Technology"
           />
           
-          <MobileNewsCarousel 
+          <MobileNewsGrid 
             title="Business" 
             articles={businessArticles}
             category="Business"  
@@ -63,7 +64,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      {/* Hero section removed as requested */}
+      <HeroSection />
       <BreakingNews />
       <main className="container px-4 py-6">
         <FeaturedArticles />
