@@ -25,10 +25,10 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 0 72% 51%;
+    --accent: 215 60% 35%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
@@ -38,36 +38,33 @@
     --radius: 0.5rem;
   }
 
-  /* Prevent color scheme changes in dark mode */
   .dark {
-    /* Same as light mode to prevent color changes */
-    --background: 0 0% 7%;
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 9%;
+    --card: 222 47% 13%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 7%;
+    --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 210 40% 98%;
     --primary-foreground: 222 47% 11%;
 
-    --secondary: 0 0% 15%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 0 0% 15%;
+    --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    /* Keep accent color consistent */
-    --accent: 0 72% 51%;
+    --accent: 215 60% 50%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
@@ -92,7 +89,7 @@
   }
   
   .section-title {
-    @apply text-2xl md:text-3xl font-bold font-heading;
+    @apply text-2xl md:text-3xl font-bold font-heading border-l-4 border-accent pl-4 mb-6;
   }
   
   .article-card {
@@ -105,63 +102,5 @@
   
   .date-text {
     @apply text-sm text-muted-foreground;
-  }
-
-  /* Mobile specific styles */
-  .mobile-app-bg {
-    @apply bg-black text-white;
-  }
-  
-  .mobile-card {
-    @apply bg-gray-800 rounded-lg overflow-hidden;
-  }
-  
-  .mobile-text-primary {
-    @apply text-white;
-  }
-  
-  .mobile-text-secondary {
-    @apply text-gray-300;
-  }
-  
-  .mobile-text-muted {
-    @apply text-gray-500;
-  }
-}
-
-@keyframes slide-in-right {
-  0% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-out-left {
-  0% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.5s ease forwards;
-}
-
-.animate-slide-out-left {
-  animation: slide-out-left 0.5s ease forwards;
-}
-
-/* Remove bottom padding when mobile nav is present */
-@media (max-width: 767px) {
-  body {
-    padding-bottom: 60px;
   }
 }

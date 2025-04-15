@@ -138,7 +138,3 @@ export const getLatestArticles = () => [...newsArticles].sort((a, b) =>
 );
 export const getArticlesByCategory = (category: string) => 
   newsArticles.filter(article => article.category === category);
-
-// Add the missing getArticleById function
-export const getArticleById = (id: string) => 
-  newsArticles.find(article => article.id === id);

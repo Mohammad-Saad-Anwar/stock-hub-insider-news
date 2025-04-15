@@ -1,106 +1,85 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, X, User } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { categories } from "@/data/mockNews";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const categories = [
-    { name: "Home", path: "/" },
-    { name: "Technology", path: "/category/technology" },
-    { name: "Markets", path: "/category/markets" },
-    { name: "Business", path: "/category/business" },
-    { name: "Startups", path: "/category/startups" },
-    { name: "Science", path: "/category/science" },
-  ];
-
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      {/* Top Bar */}
-      <div className="bg-card py-2 border-b border-border">
-        <div className="container flex justify-between items-center">
+      <div className="container py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
           <Link to="/" className="flex items-center">
             <h1 className="text-2xl md:text-3xl font-bold font-heading">
               <span className="text-accent">Tech</span>Stocks<span className="text-accent">Insider</span>
             </h1>
           </Link>
-          
-          <div className="flex items-center space-x-2">
-            <div className="hidden md:flex items-center text-sm text-muted-foreground">
-              <span>New York</span>
-              <span className="mx-2">•</span>
-              <span className="font-medium">{new Date().toLocaleDateString()}</span>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <ThemeToggle />
-              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsSearchOpen(!isSearchOpen)}>
-                <Search className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Navigation */}
-      <div className="container py-3">
-        <div className="flex items-center justify-between">
+
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {categories.map((category, index) => (
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link to="/" className="text-sm font-medium hover:text-accent duration-200">Home</Link>
+            {categories.slice(0, 4).map((category) => (
               <Link 
-                key={index}
-                to={category.path}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${
-                  category.name === "Home" 
-                    ? "bg-destructive text-destructive-foreground" 
-                    : "hover:bg-accent/10"
-                }`}
+                key={category}
+                to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                className="text-sm font-medium hover:text-accent duration-200"
               >
-                {category.name}
+                {category}
               </Link>
             ))}
+            <Link to="/categories" className="text-sm font-medium hover:text-accent duration-200">More</Link>
           </nav>
-          
-          {/* Mobile Menu Button */}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+
+          {/* Actions */}
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" className="md:hidden rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            <Button asChild className="hidden md:flex">
+              <Link to="/admin">Admin</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 animate-accordion-down">
+          <div className="md:hidden py-4">
             <nav className="flex flex-col space-y-3">
-              {categories.map((category, index) => (
+              <Link 
+                to="/" 
+                className="px-2 py-1 text-sm font-medium hover:text-accent duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              {categories.map((category) => (
                 <Link 
-                  key={index}
-                  to={category.path}
-                  className={`px-2 py-1 text-sm font-medium ${
-                    category.name === "Home" 
-                      ? "text-accent" 
-                      : "hover:text-accent"
-                  }`}
+                  key={category}
+                  to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="px-2 py-1 text-sm font-medium hover:text-accent duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {category.name}
+                  {category}
                 </Link>
               ))}
               <Link 
                 to="/admin" 
-                className="px-2 py-1 text-sm font-medium hover:text-accent"
+                className="px-2 py-1 text-sm font-medium hover:text-accent duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Admin
@@ -116,7 +95,7 @@ export function Navbar() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="search"
-                placeholder="Search tech stocks news..."
+                placeholder="Search for news..."
                 className="w-full pl-10 pr-4 py-2 bg-muted/50 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                 autoFocus
               />

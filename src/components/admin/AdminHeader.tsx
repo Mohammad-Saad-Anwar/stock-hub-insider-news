@@ -1,78 +1,41 @@
 
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, Bell, User, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Bell, Search, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AdminHeader() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   return (
-    <header className="border-b bg-card">
-      <div className="flex h-16 items-center px-4 md:px-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="mr-4 md:hidden"
-          onClick={() => document.dispatchEvent(new CustomEvent('toggle-sidebar'))}
-        >
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle Menu</span>
-        </Button>
+    <header className="bg-card border-b border-border py-4 px-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-bold">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Welcome to your admin panel</p>
+        </div>
         
-        <div className="ml-auto flex items-center space-x-2">
-          {isSearchOpen ? (
-            <div className="relative mr-2">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search..."
-                className="w-48 pl-8 md:w-64"
-                autoFocus
-                onBlur={() => setIsSearchOpen(false)}
-              />
-            </div>
-          ) : (
-            <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
-          )}
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input 
+              type="search" 
+              placeholder="Search..." 
+              className="pl-10 pr-4 py-2 text-sm rounded-full bg-muted/50 border border-border focus:outline-none focus:ring-2 focus:ring-accent w-48 md:w-64" 
+            />
+          </div>
           
-          <Button variant="ghost" size="icon">
+          <Button size="icon" variant="ghost" className="relative">
             <Bell className="h-5 w-5" />
-            <span className="sr-only">Notifications</span>
+            <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full"></span>
           </Button>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-                <span className="sr-only">User menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/admin/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/">Back to Website</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ThemeToggle />
+          
+          <Button size="icon" variant="ghost">
+            <Settings className="h-5 w-5" />
+          </Button>
+          
+          <span className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground">
+            A
+          </span>
         </div>
       </div>
     </header>
